@@ -5,7 +5,7 @@ from offregister_fab_utils.fs import cmd_avail
 
 
 def dl_install_redis_server(listen_port=6379,
-                            version='4.0.9',
+                            version='5.0.7',
                             skip_if_avail=True):
     if skip_if_avail and cmd_avail('redis-server'):
         return
