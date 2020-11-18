@@ -4,7 +4,7 @@ from fabric.operations import sudo
 from offregister_fab_utils.fs import cmd_avail
 
 
-def dl_install_redis_server(listen_port=6379, version="5.0.7", skip_if_avail=True):
+def dl_install_redis_server(listen_port=6379, version="6.0.9", skip_if_avail=True):
     if skip_if_avail and cmd_avail("redis-server"):
         return
     pkg = "redis-{version}.tar.gz".format(version=version)
