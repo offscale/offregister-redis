@@ -1,7 +1,18 @@
+from functools import partial
+from os import path
+
 from fabric.api import run
 from fabric.context_managers import shell_env, cd
+from fabric.contrib.files import exists, upload_template
 from fabric.operations import sudo
 from offregister_fab_utils.fs import cmd_avail
+from pkg_resources import resource_filename
+
+redis_dir = partial(
+    path.join,
+    path.dirname(resource_filename("offregister_redis", "__init__.py")),
+    "configs",
+)
 
 
 def dl_install_redis_server(listen_port=6379, version="6.0.9", skip_if_avail=True):
@@ -16,11 +27,37 @@ def dl_install_redis_server(listen_port=6379, version="6.0.9", skip_if_avail=Tru
             run("make")
             sudo("make install")
 
+            redis_executable = run("command -v redis-server", quiet=True)
             with shell_env(
                 REDIS_PORT=str(listen_port),
                 REDIS_CONFIG_FILE="/etc/redis/{}.conf".format(listen_port),
                 REDIS_LOG_FILE="/var/log/redis_{}.log".format(listen_port),
                 REDIS_DATA_DIR="/var/lib/redis/{}".format(listen_port),
-                REDIS_EXECUTABLE=run("command -v redis-server", quiet=True),
+                REDIS_EXECUTABLE=redis_executable,
             ):
-                return sudo("sh utils/install_server.sh")
+                if version[0] >= "6" and exists("/etc/systemd/system"):
+                    upload_template(
+                        redis_dir("systemd-redis_server.service"),
+                        "/etc/systemd/system/redis_{listen_port}".format(
+                            listen_port=listen_port
+                        ),
+                        context={
+                            "REDIS_SERVER": redis_executable,
+                            "REDIS_SERVER_ARGS": " ".join(
+                                (
+                                    "--port {listen_port}".format(
+                                        listen_port=listen_port
+                                    ),
+                                    "--logfile /var/log/redis_{listen_port}.log".format(
+                                        listen_port=listen_port
+                                    ),
+                                    "--dir /var/lib/redis/{listen_port}".format(
+                                        listen_port=listen_port
+                                    )
+                                )
+                            )
+                        },
+                        use_sudo=True,
+                    )
+                else:
+                    return sudo("sh utils/install_server.sh")
