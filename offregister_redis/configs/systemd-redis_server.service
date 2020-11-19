@@ -38,7 +38,7 @@ TimeoutStopSec=infinity
 UMask=0077
 #User=redis
 #Group=redis
-#WorkingDirectory=/var/lib/redis
+WorkingDirectory=%(WORKING_DIR)s
 
 [Install]
 WantedBy=multi-user.target
