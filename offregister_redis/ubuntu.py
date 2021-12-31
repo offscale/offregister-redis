@@ -8,11 +8,11 @@ def dl_install0(*args, **kwargs):
     apt_depends("build-essential", "pkg-config", "libsystemd-dev")
     return dl_install_redis_server(
         listen_port=kwargs.get("redis_port", 6379),
-        skip_if_avail=kwargs.get('skip_if_avail', True),
+        skip_if_avail=kwargs.get("skip_if_avail", True),
         **dict(version=kwargs["redis_version"]) if "redis_version" in kwargs else {},
     )
 
 
 def ensure_service_is_started1(*args, **kwargs):
     listen_port = kwargs.get("redis_port", 6379)
-    return restart_systemd('redis_{listen_port}'.format(listen_port=listen_port))
+    return restart_systemd("redis_{listen_port}".format(listen_port=listen_port))
