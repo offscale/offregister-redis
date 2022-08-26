@@ -5,7 +5,7 @@ from offregister_redis.base import dl_install_redis_server
 
 
 def dl_install0(*args, **kwargs):
-    apt_depends("build-essential", "pkg-config", "libsystemd-dev")
+    apt_depends(c, "build-essential", "pkg-config", "libsystemd-dev")
     return dl_install_redis_server(
         listen_port=kwargs.get("redis_port", 6379),
         skip_if_avail=kwargs.get("skip_if_avail", True),
