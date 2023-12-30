@@ -69,4 +69,5 @@ def dl_install_redis_server(c, listen_port=6379, version="6.0.9", skip_if_avail=
             else:
                 return c.sudo("sh utils/install_server.sh", env=env)
 
+
 __all__ = ["dl_install_redis_server"]

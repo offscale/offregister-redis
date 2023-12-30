@@ -18,4 +18,5 @@ def ensure_service_is_started1(c, *args, **kwargs):
     listen_port = kwargs.get("redis_port", 6379)
     return restart_systemd(c, "redis_{listen_port}".format(listen_port=listen_port))
 
+
 __all__ = ["dl_install0", "ensure_service_is_started1"]
