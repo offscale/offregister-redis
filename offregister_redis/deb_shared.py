@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from offregister_fab_utils.apt import apt_depends
 from offregister_fab_utils.ubuntu.systemd import restart_systemd
 
